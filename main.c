@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-static int ahc_echo(void * cls,
+static int stdin_echo(void * cls,
 		    struct MHD_Connection * connection,
 		    const char * url,
 		    const char * method,
@@ -53,7 +53,7 @@ int main(int argc,
 		       atoi(argv[1]),
 		       NULL,
 		       NULL,
-		       &ahc_echo,
+		       &stdin_echo,
 		       NULL,
 		       MHD_OPTION_END);
 
