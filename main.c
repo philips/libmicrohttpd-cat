@@ -38,20 +38,23 @@ static int stdin_echo(void * cls,
   struct MHD_Response * response;
   int ret;
 
-  if (0 != strcmp(method, "GET"))
-    return MHD_NO; /* unexpected method */
+  /* unexpected method */
+  if (strcmp(method, "GET") != 0)
+    return MHD_NO;
 
+  /* The first time only the headers are valid,
+     do not respond in the first round... */
   if (&dummy != *ptr) {
-      /* The first time only the headers are valid,
-         do not respond in the first round... */
       *ptr = &dummy;
       return MHD_YES;
   }
 
-  if (0 != *upload_data_size)
-    return MHD_NO; /* upload data in a GET!? */
+  /* upload data in a GET!? */
+  if (*upload_data_size != 0)
+    return MHD_NO;
 
-  *ptr = NULL; /* clear context pointer */
+  /* clear context pointer */
+  *ptr = NULL;
   response = MHD_create_response_from_callback(MHD_SIZE_UNKNOWN,
                32 * 1024,
                &read_callback,
