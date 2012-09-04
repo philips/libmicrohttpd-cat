@@ -72,7 +72,6 @@ int main(int argc, char ** argv) {
   struct MHD_Daemon * d;
   fd_set fds[3];
   int max;
-  struct timeval timeout;
   
 
   if (argc != 2) {
@@ -92,15 +91,16 @@ int main(int argc, char ** argv) {
   FD_ZERO(&fds[0]);
   FD_ZERO(&fds[1]);
   FD_ZERO(&fds[2]);
-  FD_SET(STDIN_FILENO, &fds[0]);
-
-  timeout.tv_sec  = 3 * 60;
-  timeout.tv_usec = 0;
 
   do {
+
+    max = 0;
     MHD_get_fdset(d, &fds[0], &fds[1], &fds[2], &max);
+    FD_SET(STDIN_FILENO, &fds[0]);
+
     MHD_run(d);
-  } while (select(max, &fds[0], &fds[1], &fds[2], &timeout)); 
+
+  } while(select(max, &fds[0], &fds[1], &fds[2], NULL) >= 0);
 
   return 0;
 }
